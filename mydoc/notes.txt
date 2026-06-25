@@ -1,0 +1,309 @@
+First we need to stepup the playwright project with this command
+
+"npm init playwright@latest" after the project structure look like this(you need test folder then use this command)
+
+or use this commands
+
+
+npm init -y
+
+npm install playwright
+npm install @cucumber/cucumber
+npm install dotenv
+
+
+
+playwright.config.ts         # Test configuration
+package.json
+package-lock.json            # Or yarn.lock / pnpm-lock.yaml
+tests/
+  example.spec.ts            # Minimal example test
+
+=====================================================
+ ecommerce-framework/
+│
+├── features/                  ✅ BDD layer
+│   ├── login.feature
+│   ├── checkout.feature
+│
+├── step-definitions/          ✅ Glue code
+│   ├── login.steps.js
+│   ├── checkout.steps.js
+│
+├── pages/                     ✅ POM
+│   ├── login.page.js
+│   ├── product.page.js
+│   ├── cart.page.js
+│
+├── utils/                     ✅ Core reusable layer
+│   ├── logger.js
+│   ├── actions.js
+│   ├── assertions.js
+│
+├── support/                   ✅ Hooks + world
+│   ├── hooks.js
+│   ├── world.js
+│
+├── config/
+│   ├── env.js                 ✅ env management
+│
+├── reports/                   ✅ reports
+│
+├── cucumber.js
+├── playwright.config.js
+├── package.json
+
+I need to make our project look like this structure
+no tests folder to run the testcases Because we are following BDD testing so we are following this structure
+Carefully configure the steps and feature path in playwright configuration
+
+
+====================================
+
+why logger methods are static because No need to async method here because it will not instract with the utils
+or element so we are using simple static method We will use non static method also but that is unwanted to
+create the object for that logger class
+
+ Logger:
+
+Does NOT depend on page
+Does NOT depend on test data
+Just prints logs
+
+
+ Actions:
+
+Needs page
+Works with UI elements
+Depends on browser context
+
+👉 Same for Assertions:
+
+Needs page or locator
+
+
+Logger → global helper ✅
+Actions → UI layer ✅
+Assertions → validation layer ✅
+
+
+Why Logger is static but Actions is instance-based?”
+✅ Answer:
+
+Logger is a utility that does not depend on any runtime context, so it is implemented using static methods. Actions and Assertions depend on the Playwright page
+ object, so they are instance-based to maintain state and interact with the browser.
+
+ why not async for Logger?
+
+ there is no UI interaction so No need to wait for the element
+
+ Browser interaction ✅
+Network/UI delay ✅
+Playwright waiting internally ✅
+
+“Why Logger is static and not async?”
+✅ Answer:
+
+Logger is implemented as a static utility because it does not depend on any instance-level data. It performs synchronous operations like console logging, so there is no need for async/await. 
+Async is used only where asynchronous operations like browser interactions or API calls are involved.
+
+
+why not function instead of method?
+
+
+Enterprise frameworks prefer class + methods for structure and scalability
+
+if you use function it look like this 
+
+
+export async function click(page, locator) {
+  await page.locator(locator).click();
+}
+
+every function you need to export and use page fixture 
+
+With class:
+JavaScriptconstructor(page) {  this.page = page;}Show more lines
+ Use once, reuse everywhere 
+
+
+Function style
+JavaScriptawait click(page, '#btn');await fill(page, '#email', 'test');Show more lines  -====here used pages
+
+ Class style
+JavaScriptawait this.actions.click('#btn');await this.actions.fill('#email', 'test');Show more lines// here did used
+ Cleaner, readable 
+
+
+. Dependency Injection (Enterprise Pattern)
+JavaScriptthis.actions = new Actions(page);Show more lines
+ Inject once, reuse 
+
+ 6. Extensibility
+You can extend class:
+JavaScriptclass AdvancedActions extends Actions {  async clickWithLog() { ... }}``Show more lines
+ Hard with functions 
+
+
+ =================================================
+
+ 3.to ask the copilot for the action,logger,assertion script with documentation ,documentation means clear 
+ explaination about that Function
+
+ we are using 2 different style of export style like ;
+
+ 1)export default Logger; (Export After Declaration)
+ 2)export default class Actions {}(inline export)
+ Both are valid ES module patterns. Inline export is concise, while separate export improves readability. In enterprise frameworks, 
+ we usually follow consistent export style across the project for maintainability.
+ ===============================================================
+
+  “Why are hooks used instead of test.beforeAll?”
+✅ Answer:
+
+In Cucumber-based frameworks, we use Before and After hooks to manage the test lifecycle because 
+Cucumber does not support Playwright’s test.beforeAll or fixture system. The Before hook ensures that 
+each scenario starts with a fresh browser context, improving test isolation and reliability, while the 
+After hook handles cleanup and failure reporting.
+
+
+❓ “Why not use beforeAll?”
+✅ Answer:
+
+beforeAll runs once for all tests, which can cause state sharing and flaky behavior. In contrast, 
+Cucumber’s Before hook runs before each scenario, ensuring proper isolation and making tests independent.
+
+
+=========================================
+1.I have created the feature file, step definition ,page object
+2.I have created cucmber.cjs file in that I have mentioned feature file,step defintion,hooks path in the file
+3.*****I have faced lot issue to mention the path in cucumber file and feature file example mention****
+carefully do that
+4.for clean understanding i have mention all thing in hook like browser lunch and page object creation ,new page switch
+like because inside the steps you need to create the page and import the page object in every step definition
+file 
+5.no that is make some confusion so i have mentioned that separately in hook for understanding
+6.also i have mention switch new page script also in the hook
+7.switchnew tab/page no need for all page but in future you have some case means without confusion 
+you will use handle that 
+8.If write the code for new switchtab inside the step/page it will some confucion so to avoid that I used like this
+9.How it will work means 
+
+
+const [newPage] = await Promise.all([
+  this.context.waitForEvent('page'),//wait for the event
+  this.page.click('#pay')
+]);
+
+this.switchAllPagesToNewPage(newPage);//then switch to new page
+
+
+like this it will work ,the switch to new page metod I will mention in the hook ,waitfor event will mention in script
+
+10.anything you mention ref variable anywhere ******dont type manually ,please do copy and paste like import path,page refernce)
+
+
+==============================================================================================
+
+If interviewer asks:
+👉 “Why can’t you define getByRole globally?”
+✅ Answer:
+
+Because Playwright locators like getByRole depend on the page instance, which is created at runtime. Defining them globally would result in undefined errors
+ since the page is not available at that time.
+
+===================================================================================================
+
+1)in case ,You are using playwright locator means you must need page ficture without page fixture it will not working
+2)but ,you are using locator means you can mention that in globally because that is string 
+3)if you using playwright locator then you can use locator in inside te constructor
+
+like this you can use
+
+
+constructor(page) {
+    this.page = page;
+
+    this.nameInput = page.getByRole('textbox', { name: 'Name' });
+  }
+
+
+real flow
+
+1. Test starts
+2. Before hook runs → page created ✅
+3. Page object created ✅
+4. constructor runs ✅
+5. getByRole works ✅
+
+
+import { selectors } from '../locators/selectors.js';
+import Actions from '../utils/actions.js';
+
+class SignupPage {
+
+  constructor(page, context) {
+    this.actions = new Actions(page, context);
+  }
+
+  async navigate(url) {
+    await this.actions.navigate(url);
+  }
+
+  async signUp(name, email, password) {
+
+    await this.actions.click(selectors.signup.signLoginBtn);
+
+    await this.actions.fill(selectors.signup.name, name);
+
+    await this.actions.fill(selectors.signup.email, email);
+
+    await this.actions.fill(selectors.signup.password, password);
+
+    await this.actions.click(selectors.signup.signupBtn);
+  }
+}
+
+export default SignupPage;
+
+
+like this you will create one selector file with multiple object like
+
+
+export const selectors = {
+  signup: {
+    name: "//input[@placeholder='Name']",
+    email: "//input[@placeholder='Email Address']"
+  },
+  login: {
+    email: "//input[@name='email']",
+    password: "//input[@name='password']"
+  }
+};
+
+//////////////////////////////////
+...(process.env.tag && { tags: process.env.tag })
+PartPurposeprocess.env.tag========== (1st)condition check ✅
+process.env.tag =====(2nd)value assignment ✅
+
+first process.env.tag check the condition you are using tag to run the script if true then create the object
+and store the value into the tag variable 
+
+//////////////////////////////////
+
+
+1.add the screenshot script in after hook before browser close 
+2.create one folder repots inside screenshots folder ---structure like reports/screenshots
+
+
+/////////////////////
+
+to add html report command is 
+
+1.npm install cucumber-html-reporter
+2. craete one report name file inside utils folder
+3.copy and paste the code
+4.update the cucumber.js path with this """son:reports/cucumber-report.json""
+
+
+
