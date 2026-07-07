@@ -1,9 +1,12 @@
 
-
+import config from '../config.js'
 
 import { Given, When, Then } from '@cucumber/cucumber';
 
-
+Given('I navigate to website',async function () {
+  await this.signupPage.navigate(config.dev.baseURL);
+  await console.log(`this is the application url ${config.dev.baseURL}`);
+});
 
 Given('I navigate to {string} website', async function (url) {
   await this.signupPage.navigate(url);

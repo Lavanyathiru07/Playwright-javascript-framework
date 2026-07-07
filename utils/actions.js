@@ -1,295 +1,440 @@
 import Logger from './logger.js';
 
 /**
- * Actions class encapsulates all reusable UI interaction methods.
+ * Actions class provides reusable UI interaction methods.
  * 
- * This class provides a centralized abstraction over Playwright actions
- * such as click, fill, select, and check. It improves readability,
- * maintainability, and consistency across test scripts.
+ * Handles all browser actions like click, input, selection,
+ * and navigation with proper logging and error handling.
  */
 export default class Actions {
 
   /**
-   * Constructor to initialize Playwright page instance.
+   * Initializes Actions with Playwright page instance
    * 
-   * @param {Page} page - Playwright page object
+   * @param {import('@playwright/test').Page} page
    */
-  
   constructor(page) {
-    this.page = page;   // ✅ MUST be assigned
+    this.page = page;
   }
 
-
   /**
-   * Clicks on a web element after ensuring it is visible.
+   * Clicks an element
    * 
-   * @param {string} locator - Element selector
-   * @param {string} elementName - Logical name of the element for logging
+   * @param {string} locator 
+   * @param {string} elementName 
    */
   async click(locator, elementName) {
-    Logger.step(`Click on ${elementName}`);
+    try {
+      Logger.step(`Click on ${elementName}`);
 
-    const element = this.page.locator(locator);
-    await element.waitFor({ state: 'visible' });
-    await element.click();
+      const element = this.page.locator(locator);
+      await element.waitFor({ state: 'visible' });
 
-    Logger.info(`${elementName} clicked successfully`);
-  }
+      Logger.action(`Clicking ${elementName}`);
+      await element.click();
 
-  /**
-   * Clears existing value and enters text into an input field.
-   * 
-   * @param {string} locator - Element selector
-   * @param {string} value - Value to enter
-   * @param {string} elementName - Logical field name for logging
-   */
-  async fill(locator, value, elementName) {
-    Logger.step(`Enter value into ${elementName}`);
+      Logger.success(`${elementName} clicked successfully`);
 
-    const element = this.page.locator(locator);
-    await element.waitFor({ state: 'visible' });
-
-    await element.fill('');
-    await element.fill(value);
-
-    Logger.info(`${value} entered into ${elementName}`);
-  }
-
-  /**
-   * Selects a checkbox or radio button if not already selected.
-   * 
-   * @param {string} locator - Element selector
-   * @param {string} elementName - Logical name for logging
-   */
-  async check(locator, elementName) {
-    Logger.step(`Select ${elementName}`);
-
-    const element = this.page.locator(locator);
-    await element.waitFor({ state: 'visible' });
-
-    const isChecked = await element.isChecked();
-
-    if (!isChecked) {
-      await element.check();
-      Logger.info(`${elementName} selected`);
-    } else {
-      Logger.info(`${elementName} already selected`);
+    } catch (error) {
+      Logger.error(`Failed to click ${elementName}`);
+      throw error;
     }
   }
 
   
-
-async getUrl(elementName = "Current Page URL") {
-  Logger.step(`Getting URL of ${elementName}`);
+/**
+ * Get current page URL
+ * 
+ * @param {string} elementName
+ * @returns {string}
+ */
+async getUrl(elementName = 'Current Page') {
+  Logger.step(`Get URL of ${elementName}`);
 
   const url = this.page.url();
 
-  Logger.info(`URL of ${elementName}: ${url}`);
+  Logger.info(`${elementName} URL: ${url}`);
 
   return url;
 }
 
 /**
- * Retrieves the total count of elements matching the given locator.
+ * Get text from all elements in a list
  * 
- * Waits for at least one element to be visible before counting,
- * ensuring that the elements are properly loaded on the page.
- * 
- * @param {string} locator - Element selector (XPath or CSS) used to identify elements
- * @param {string} elementName - Logical name of the element for logging purposes
- * @returns {number} Total number of elements found
+ * @param {string} locator - Locator for list elements
+ * @param {string} elementName - Logical name for logging
+ * @returns {Promise<string[]>} Array of text values
  */
-async getCount(locator, elementName) {
-  Logger.step(`Getting count of ${elementName}`);
+async getAllTexts(locator, elementName) {
+  try {
+    Logger.step(`Get all texts from ${elementName}`);
 
-  const elements = this.page.locator(locator);
+    const elements = this.page.locator(locator);
 
-  await elements.first().waitFor({ state: 'visible' });
+    await elements.first().waitFor({ state: 'visible' });
 
-  const count = await elements.count();
+    const count = await elements.count();
+    const textList = [];
 
-  Logger.info(`Total count of ${elementName}: ${count}`);
+    Logger.info(`Total ${elementName}: ${count}`);
 
-  return count;
+    for (let i = 0; i < count; i++) {
+      const text = await elements.nth(i).textContent();
+
+      Logger.action(`Reading text at index ${i}: ${text}`);
+
+      textList.push(text.trim());
+    }
+
+    Logger.success(`All texts retrieved from ${elementName}`);
+
+    return textList;
+
+  } catch (error) {
+    Logger.error(`Failed to get texts from ${elementName}`);
+    throw error;
+  }
+}
+
+
+/**
+ * Scroll page by given pixels
+ * 
+ * @param {number} x
+ * @param {number} y
+ */
+async scrollBy(x, y) {
+  try {
+    Logger.step(`Scroll page by X:${x}, Y:${y}`);
+
+    await this.page.evaluate(([x, y]) => {
+      window.scrollBy(x, y);
+    }, [x, y]);
+
+    Logger.success(`Page scrolled`);
+
+  } catch (error) {
+    Logger.error(`Failed to scroll page`);
+    throw error;
+  }
+}
+
+/**
+ * Scroll to bottom of page
+ */
+async scrollToBottom() {
+  try {
+    Logger.step(`Scroll to bottom of page`);
+
+    await this.page.evaluate(() => {
+      window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    Logger.success(`Scrolled to bottom`);
+
+  } catch (error) {
+    Logger.error(`Failed to scroll to bottom`);
+    throw error;
+  }
+}
+
+
+/**
+ * Hover on an element and click a target element
+ * 
+ * @param {string} hoverLocator - Element to hover on
+ * @param {string} clickLocator - Element to click after hover
+ * @param {string} elementName - Logical name for logging
+ */
+async hoverAndClick(hoverLocator, clickLocator, elementName) {
+  try {
+    Logger.step(`Hover and click ${elementName}`);
+
+    const hoverElement = this.page.locator(hoverLocator);
+    const clickElement = this.page.locator(clickLocator);
+
+    await hoverElement.waitFor({ state: 'visible' });
+
+    Logger.action(`Hovering on element`);
+    await hoverElement.hover();
+
+    await clickElement.waitFor({ state: 'visible' });
+
+    Logger.action(`Clicking ${elementName}`);
+    await clickElement.click();
+
+    Logger.success(`${elementName} clicked after hover`);
+
+  } catch (error) {
+    Logger.error(`Failed to hover and click ${elementName}`);
+    throw error;
+  }
 }
 
 
   /**
-   * Unchecks a checkbox if selected.
+   * Enters value into input field
    * 
-   * @param {string} locator - Element selector
-   * @param {string} elementName - Logical name for logging
+   * @param {string} locator
+   * @param {string} value
+   * @param {string} elementName
    */
-  async uncheck(locator, elementName) {
-    Logger.step(`Unselect ${elementName}`);
+  async fill(locator, value, elementName) {
+    try {
+      Logger.step(`Enter value into ${elementName}`);
 
-    const element = this.page.locator(locator);
-    await element.waitFor({ state: 'visible' });
+      const element = this.page.locator(locator);
+      await element.waitFor({ state: 'visible' });
 
-    const isChecked = await element.isChecked();
+      Logger.action(`Entering "${value}" into ${elementName}`);
+      await element.fill('');
+      await element.fill(value);
 
-    if (isChecked) {
-      await element.uncheck();
-      Logger.info(`${elementName} unselected`);
-    } else {
-      Logger.info(`${elementName} already unselected`);
+      Logger.success(`${elementName} filled successfully`);
+
+    } catch (error) {
+      Logger.error(`Failed to fill ${elementName}`);
+      throw error;
     }
   }
 
-
   /**
- * Clicks an element from the list based on given index
- * 
- * @param {string} locator - Element selector (XPath or CSS)
- * @param {number} index - Index of element to click (0-based)
- * @param {string} elementName - Logical name for logging
- * 
- * 
-elements.first()   → first element ✅  
-elements.last()    → last element ✅  
-elements.nth(3)    → 4th element ✅
+   * Checks a checkbox if not selected
+   */
+  async check(locator, elementName) {
+    try {
+      Logger.step(`Select ${elementName}`);
 
- */
-async clickElementByIndex(locator, index, elementName) {
-  Logger.step(`Clicking ${elementName} at index ${index}`);
+      const element = this.page.locator(locator);
+      await element.waitFor({ state: 'visible' });
 
-  const elements = this.page.locator(locator);
+      if (!(await element.isChecked())) {
+        Logger.action(`Checking ${elementName}`);
+        await element.check();
+        Logger.success(`${elementName} selected`);
+      } else {
+        Logger.info(`${elementName} already selected`);
+      }
 
-  await elements.first().waitFor({ state: 'visible' });
-
-  const count = await elements.count();
-
-  if (index >= count) {
-    Logger.error(`Index ${index} is out of range. Total elements: ${count}`);
-    throw new Error(`Invalid index for ${elementName}`);
+    } catch (error) {
+      Logger.error(`Failed to select ${elementName}`);
+      throw error;
+    }
   }
 
-  await elements.nth(index).click();
+  /**
+   * Unchecks a checkbox
+   */
+  async uncheck(locator, elementName) {
+    try {
+      Logger.step(`Unselect ${elementName}`);
 
-  Logger.info(`Clicked ${elementName} at index ${index}`);
-}
+      const element = this.page.locator(locator);
+      await element.waitFor({ state: 'visible' });
+
+      if (await element.isChecked()) {
+        Logger.action(`Unchecking ${elementName}`);
+        await element.uncheck();
+        Logger.success(`${elementName} unselected`);
+      } else {
+        Logger.info(`${elementName} already unselected`);
+      }
+
+    } catch (error) {
+      Logger.error(`Failed to unselect ${elementName}`);
+      throw error;
+    }
+  }
 
   /**
-   * Selects an option from dropdown using visible label.
-   * 
-   * @param {string} locator - Element selector
-   * @param {string} label - Visible text of dropdown option
-   * @param {string} elementName - Logical name for logging
+   * Click element by index
+   */
+  async clickElementByIndex(locator, index, elementName) {
+    try {
+      Logger.step(`Click ${elementName} at index ${index}`);
+
+      const elements = this.page.locator(locator);
+      await elements.first().waitFor({ state: 'visible' });
+
+      const count = await elements.count();
+
+      if (index >= count) {
+        throw new Error(`Index ${index} out of range`);
+      }
+
+      Logger.action(`Clicking ${elementName} at index ${index}`);
+      await elements.nth(index).click();
+
+      Logger.success(`${elementName} clicked successfully`);
+
+    } catch (error) {
+      Logger.error(`Failed to click ${elementName}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Select dropdown by label
    */
   async selectByLabel(locator, label, elementName) {
-    Logger.step(`Select ${label} from ${elementName}`);
+    try {
+      Logger.step(`Select ${label} from ${elementName}`);
 
-    const element = this.page.locator(locator);
-    await element.waitFor({ state: 'visible' });
+      const element = this.page.locator(locator);
+      await element.waitFor({ state: 'visible' });
 
-    await element.selectOption({ label });
+      Logger.action(`Selecting ${label}`);
+      await element.selectOption({ label });
 
-    Logger.info(`${label} selected from ${elementName}`);
-  }
+      Logger.success(`${label} selected`);
 
-
-
-
-  /**
-   * Selects an option from dropdown using value.
-   * 
-   * @param {string} locator - Element selector
-   * @param {string} value - Option value
-   * @param {string} elementName - Logical name for logging
-   */
-  async selectByValue(locator, value, elementName) {
-    Logger.step(`Select value from ${elementName}`);
-
-    const element = this.page.locator(locator);
-    await element.waitFor({ state: 'visible' });
-
-    await element.selectOption(value);
-
-    Logger.info(`${value} selected from ${elementName}`);
+    } catch (error) {
+      Logger.error(`Failed to select ${label}`);
+      throw error;
+    }
   }
 
   /**
-   * Hovers over an element.
-   * 
-   * @param {string} locator - Element selector
-   * @param {string} elementName - Logical name for logging
-   */
-  async hover(locator, elementName) {
-    Logger.step(`Hover on ${elementName}`);
-
-    const element = this.page.locator(locator);
-    await element.hover();
-
-    Logger.info(`Hovered on ${elementName}`);
-  }
-
-  /**
-   * Waits until the element becomes visible.
-   * 
-   * @param {string} locator - Element selector
-   * @param {string} elementName - Logical name for logging
-   */
-  async waitForVisible(locator, elementName) {
-    Logger.step(`Wait for ${elementName} to be visible`);
-
-    await this.page.locator(locator).waitFor({ state: 'visible' });
-
-    Logger.info(`${elementName} is visible`);
-  }
-
-  /**
-   * Scrolls to the specified element.
-   * 
-   * @param {string} locator - Element selector
-   * @param {string} elementName - Logical name for logging
-   */
-  async scrollTo(locator, elementName) {
-    Logger.step(`Scroll to ${elementName}`);
-
-    await this.page.locator(locator).scrollIntoViewIfNeeded();
-
-    Logger.info(`${elementName} is in view`);
-  }
-
-  /**
-   * Retrieves text content from an element.
-   * 
-   * @param {string} locator - Element selector
-   * @param {string} elementName - Logical name for logging
-   * @returns {Promise<string>} text content of the element
+   * Get text from element
    */
   async getText(locator, elementName) {
     Logger.step(`Get text from ${elementName}`);
 
     const text = await this.page.locator(locator).textContent();
-    console.log(`this is the text: ${text}`);
 
-    Logger.info(`Text retrieved from ${elementName}`);
-
+    Logger.info(`Text from ${elementName}: ${text}`);
     return text;
   }
 
   /**
-   * Navigates to a given URL.
-   * 
-   * @param {string} url - Target URL
+   * Get element count
+   */
+  async getCount(locator, elementName) {
+    Logger.step(`Get count of ${elementName}`);
+
+    const elements = this.page.locator(locator);
+    await elements.first().waitFor({ state: 'visible' });
+
+    const count = await elements.count();
+
+    Logger.info(`${elementName} count: ${count}`);
+    return count;
+  }
+
+  /**
+   * Navigate to URL
    */
   async navigate(url) {
     Logger.step(`Navigate to URL`);
 
     await this.page.goto(url);
 
-    Logger.info(`Navigation completed`);
+    Logger.success(`Navigation completed`);
   }
 
   /**
-   * Waits for page load to complete.
+   * Wait for page load
    */
   async waitForPageLoad() {
     Logger.step(`Wait for page load`);
 
     await this.page.waitForLoadState('networkidle');
 
-    Logger.info(`Page load completed`);
+    Logger.success(`Page loaded successfully`);
+  }
+
+  /**
+   * Wait for element visibility
+   */
+  async waitForVisible(locator, elementName) {
+    Logger.step(`Wait for ${elementName}`);
+
+    await this.page.locator(locator).waitFor({ state: 'visible' });
+
+    Logger.success(`${elementName} is visible`);
+  }
+
+  /**
+   * Scroll to element
+   */
+  async scrollTo(locator, elementName) {
+    Logger.step(`Scroll to ${elementName}`);
+
+    await this.page.locator(locator).scrollIntoViewIfNeeded();
+
+    Logger.success(`${elementName} in view`);
+  }
+
+  /**
+ * Wait for element to be visible
+ */
+async waitForElement(locator, elementName) {
+  try {
+    Logger.step(`Wait for ${elementName} to be visible`);
+
+    await this.page.locator(locator).waitFor({ state: 'visible' });
+
+    Logger.success(`${elementName} is visible`);
+  } catch (error) {
+    Logger.error(`${elementName} not visible`);
+    throw error;
   }
 }
+
+/**
+ * Wait for element to disappear
+ */
+async waitForElementToDisappear(locator, elementName) {
+  try {
+    Logger.step(`Wait for ${elementName} to disappear`);
+
+    await this.page.locator(locator).waitFor({ state: 'hidden' });
+
+    Logger.success(`${elementName} disappeared`);
+  } catch (error) {
+    Logger.error(`${elementName} still present`);
+    throw error;
+  }
+}
+
+/**
+ * Wait until URL contains expected value
+ */
+async waitForURL(expectedText) {
+  try {
+    Logger.step(`Wait for URL to contain ${expectedText}`);
+
+    await this.page.waitForURL(`**${expectedText}**`);
+
+    Logger.success(`URL contains ${expectedText}`);
+  } catch (error) {
+    Logger.error(`URL did not contain ${expectedText}`);
+    throw error;
+  }
+}
+
+/**
+ * Wait for full page load
+ */
+async waitForPageLoad() {
+  try {
+    Logger.step(`Wait for page load`);
+
+    await this.page.waitForLoadState('networkidle');
+
+    Logger.success(`Page loaded successfully`);
+  } catch (error) {
+    Logger.error(`Page did not load properly`);
+    throw error;
+  }
+}
+
+/**
+ * Hard wait (Use only if absolutely needed)
+ */
+async waitForTime(milliseconds) {
+  Logger.warn(`Waiting for ${milliseconds} ms`);
+  await this.page.waitForTimeout(milliseconds);
+}
+}
+

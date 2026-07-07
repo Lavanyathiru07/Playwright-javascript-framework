@@ -1,164 +1,214 @@
 import Logger from './logger.js';
 
-class Assertions {
+/**
+ * Assertions class provides reusable validation methods.
+ * 
+ * This class is responsible for verifying UI state, text,
+ * visibility, counts, and other validations across the application.
+ * 
+ */
+export default class Assertions {
+
+  /**
+   * Initialize Assertions with Playwright page
+   * 
+   * @param {import('@playwright/test').Page}
+   */
 
   constructor(page) {
     this.page = page;
   }
 
   /**
-   * Verifies element is visible
+   * Verify element is visible
+   * @param {string} locator
+   * @param {string} elementName
    */
+
   async verifyVisible(locator, elementName) {
-    Logger.step(`Verifying visibility of ${elementName}`);
+    Logger.step(`Verify visibility of ${elementName}`);
 
     const isVisible = await this.page.locator(locator).isVisible();
 
     if (isVisible) {
-      Logger.info(`${elementName} is visible`);
+      Logger.success(`${elementName} is visible`);
     } else {
-      Logger.error(`${elementName} is not visible`);
-      throw new Error(`Visibility validation failed for ${elementName}`);
+      Logger.error(`${elementName} is NOT visible`);
+      throw new Error(`Visibility validation failed`);
     }
   }
 
   /**
-   * Verifies text equals expected value
+   * Verify text equals expected value
+   * 
+   * @param {string} locator
+   * @param {string} expectedText
+   * @param {string} elementName
    */
+
   async verifyText(locator, expectedText, elementName) {
-    Logger.step(`Verifying text of ${elementName}`);
+    Logger.step(`Verify text of ${elementName}`);
 
     const actualText = await this.page.locator(locator).textContent();
 
-    if (actualText.trim() === expectedText) {
-      Logger.info(`Text matched for ${elementName}`);
+    if (actualText?.trim() === expectedText) {
+      Logger.success(`Text matched for ${elementName}`);
     } else {
       Logger.error(`Expected: ${expectedText}, Actual: ${actualText}`);
-      throw new Error(`Text validation failed for ${elementName}`);
+      throw new Error(`Text validation failed`);
     }
   }
 
   /**
-   * Verifies text contains expected value
+   * Verify text contains expected value
+   * 
+   * @param {string} locator
+   * @param {string} expectedText
+   * @param {string} elementName
    */
+
   async verifyTextContains(locator, expectedText, elementName) {
-    Logger.step(`Verifying ${elementName} contains "${expectedText}"`);
+    Logger.step(`Verify ${elementName} contains "${expectedText}"`);
 
     const text = await this.page.locator(locator).textContent();
 
-    if (text.toLowerCase().includes(expectedText.toLowerCase())) {
-      Logger.info(`Text contains expected value`);
+    if (text?.toLowerCase().includes(expectedText.toLowerCase())) {
+      Logger.success(`Text validation passed`);
     } else {
       Logger.error(`Text does not contain expected value`);
-      throw new Error(`Contains validation failed for ${elementName}`);
+      throw new Error(`Contains validation failed`);
     }
   }
 
+  
+
   /**
-   * Verifies URL contains expected text
+   * Verify URL contains expected value
+   * 
+   * @param {string} expectedText
+   * @param {string} pageName
    */
+
+
   async verifyUrlContains(expectedText, pageName) {
-    Logger.step(`Verifying URL for ${pageName}`);
+    Logger.step(`Verify URL for ${pageName}`);
 
     const url = this.page.url();
 
     if (url.includes(expectedText)) {
-      Logger.info(`URL validation passed`);
+      Logger.success(`URL validation passed`);
     } else {
-      Logger.error(`URL mismatch. Current URL: ${url}`);
+      Logger.error(`Current URL: ${url}`);
       throw new Error(`URL validation failed`);
     }
   }
 
   /**
-   * Verifies element count is greater than expected
+   * Verify element count greater than a given value
+   * 
+   * @param {string} locator
+   * @param {number} expectedCount
+   * @param {string} elementName
    */
+
   async verifyCountGreaterThan(locator, expectedCount, elementName) {
-    Logger.step(`Verifying count of ${elementName}`);
+    Logger.step(`Verify count of ${elementName}`);
 
     const count = await this.page.locator(locator).count();
 
     if (count > expectedCount) {
-      Logger.info(`${elementName} count is valid: ${count}`);
+      Logger.success(`${elementName} count is valid: ${count}`);
     } else {
-      Logger.error(`Expected > ${expectedCount}, but got ${count}`);
-      throw new Error(`Count validation failed for ${elementName}`);
+      Logger.error(`Expected > ${expectedCount}, Actual: ${count}`);
+      throw new Error(`Count validation failed`);
     }
   }
 
   /**
-   * Verifies element count is exact
+   * Verify element count equals expected value
+   * 
+   * @param {string} locator
+   * @param {number} expectedCount
+   * @param {string} elementName
    */
+
   async verifyCountEquals(locator, expectedCount, elementName) {
-    Logger.step(`Verifying count of ${elementName} equals ${expectedCount}`);
+    Logger.step(`Verify count equals ${expectedCount} for ${elementName}`);
 
     const count = await this.page.locator(locator).count();
 
     if (count === expectedCount) {
-      Logger.info(`Count matched: ${count}`);
+      Logger.success(`Count matched`);
     } else {
       Logger.error(`Expected: ${expectedCount}, Actual: ${count}`);
-      throw new Error(`Count mismatch for ${elementName}`);
+      throw new Error(`Count mismatch`);
     }
   }
 
   /**
-   * Verifies checkbox is checked
+   * Verify input field value
+   * 
+   * @param {string} locator
+   * @param {string} expectedValue
+   * @param {string} elementName
    */
+
+  async verifyInputValue(locator, expectedValue, elementName) {
+    Logger.step(`Verify input value of ${elementName}`);
+
+    const value = await this.page.locator(locator).inputValue();
+
+    if (value === expectedValue) {
+      Logger.success(`Input value matched`);
+    } else {
+      Logger.error(`Expected: ${expectedValue}, Actual: ${value}`);
+      throw new Error(`Input validation failed`);
+    }
+  }
+
+  /**
+   * Verify checkbox is checked
+   * 
+   * @param {string} locator
+   * @param {string} elementName
+   */
+
   async verifyChecked(locator, elementName) {
-    Logger.step(`Verifying ${elementName} is checked`);
+    Logger.step(`Verify ${elementName} is checked`);
 
     const isChecked = await this.page.locator(locator).isChecked();
 
     if (isChecked) {
-      Logger.info(`${elementName} is checked`);
+      Logger.success(`${elementName} is checked`);
     } else {
-      Logger.error(`${elementName} is not checked`);
+      Logger.error(`${elementName} is NOT checked`);
       throw new Error(`Checkbox validation failed`);
     }
   }
 
   /**
-   * Verifies input field value
+   * Verify all elements contain expected text
+   * 
+   * @param {string} locator
+   * @param {string} expectedText
+   * @param {string} elementName
    */
-  async verifyInputValue(locator, expectedValue, elementName) {
-    Logger.step(`Verifying input value of ${elementName}`);
 
-    const value = await this.page.locator(locator).inputValue();
-
-    if (value === expectedValue) {
-      Logger.info(`Input value matched`);
-    } else {
-      Logger.error(`Expected: ${expectedValue}, Actual: ${value}`);
-      throw new Error(`Input value validation failed`);
-    }
-  }
-
-  /**
-   * Verifies all elements contain expected text
-   */
   async verifyAllElementsContainText(locator, expectedText, elementName) {
-    Logger.step(`Validating ${elementName} contains "${expectedText}"`);
+    Logger.step(`Verify all ${elementName} contain "${expectedText}"`);
 
     const elements = this.page.locator(locator);
-
-    await elements.first().waitFor({ state: 'visible' });
-
     const count = await elements.count();
 
     for (let i = 0; i < count; i++) {
       const text = await elements.nth(i).textContent();
 
-      if (text.toLowerCase().includes(expectedText.toLowerCase())) {
-        Logger.info(`PASS: ${text}`);
-      } else {
-        Logger.error(`FAIL: ${text}`);
-        throw new Error(`Validation failed for ${elementName}`);
+      if (!text.toLowerCase().includes(expectedText.toLowerCase())) {
+        Logger.error(`Validation failed for item: ${text}`);
+        throw new Error(`List validation failed`);
       }
     }
 
-    Logger.info(`All ${elementName} validated successfully`);
+    Logger.success(`All ${elementName} validated successfully`);
   }
 }
-
-export default Assertions;

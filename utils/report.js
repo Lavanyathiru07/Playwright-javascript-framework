@@ -2,19 +2,14 @@ import reporter from 'cucumber-html-reporter';
 
 const options = {
   theme: 'bootstrap',
-
   jsonFile: 'reports/cucumber-report.json',
   output: 'reports/cucumber-report.html',
-
   reportSuiteAsScenarios: true,
   launchReport: true,
-
   metadata: {
-    "App Name": "Automation Exercise",
-    "Test Environment": "QA",
+    "Environment": process.env.ENV || "dev",
     "Browser": "Chromium",
-    "Platform": "Windows",
-    "Executed By": "Lavanya"
+    "Platform": "Windows"
   }
 };
 

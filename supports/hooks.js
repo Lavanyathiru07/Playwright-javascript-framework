@@ -1,9 +1,12 @@
 import { Before, After, setDefaultTimeout } from '@cucumber/cucumber';
 import { chromium } from 'playwright';
+import fs from 'fs';
 
 import SignupPage from '../pages/signupPageObject.js';
 import LoginPage from '../pages/loginPageObject.js';
 import ProductPage from '../pages/productPageObject.js';
+import ProductPurchasePage from '../pages/productPurchasePageObject.js';
+import ApiPageObject from '../pages/apiPageObject.js'
 
 // Set default timeout to 90 seconds
 setDefaultTimeout(90 * 1000);
@@ -29,6 +32,8 @@ Before(async function () {
      this.signupPage = new SignupPage(this.page, this.context);
      this.loginPage=new LoginPage(this.page, this.context);
      this.productPage=new ProductPage(this.page, this.context);
+     this.productPurchasePage=new ProductPurchasePage(this.page, this.context);
+     this.apiPage = new ApiPageObject();
 
  this.switchAllPagesToNewPage = (newPage) => {
         this.page = newPage;
@@ -37,6 +42,8 @@ Before(async function () {
             this.signupPage,
             this.loginPage,
             this.productPage,
+            this.productPurchasePage,
+            this.apiPage
         ];
              pageObjects.forEach(po => {
             if (po && po.actions) {
@@ -50,28 +57,27 @@ Before(async function () {
 });
 
 
-
 After(async function (scenario) {
 
-  //  Capture screenshot BEFORE closing browser
-  if (scenario.result.status === 'FAILED' && this.page) {
-
-    const fileName = scenario.pickle.name.replace(/\s+/g, '_');
+  if (scenario.result.status === 'FAILED') {
 
     const screenshot = await this.page.screenshot({
-      path: `reports/screenshots/${fileName}.png`,
+      path: `reports/screenshots/${scenario.pickle.name}.png`,
       fullPage: true
     });
 
-    await this.attach(screenshot, 'image/png');
+    console.log(`📸 Screenshot captured for failed scenario`);
 
-    console.log(`Screenshot captured for failed scenario: ${fileName}`);
+    // Attach to Cucumber report
+    await this.attach(screenshot, 'image/png');
   }
 
-  // Then close everything
+
   if (this.page) await this.page.close();
   if (this.context) await this.context.close();
   if (this.browser) await this.browser.close();
-
 });
-``
+
+
+
+

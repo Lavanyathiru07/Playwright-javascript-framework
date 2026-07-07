@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "cucumber-js -p default && node utils/report.js"
+    "test": "cucumber-js -p default",
+    "test-Reports":"cucumber-js -p default && node utils/report.js",
+    "test:retry": "cucumber-js -p default --retry 2",
+    "test:fast": "cucumber-js -p default --parallel 3",
+    "test:combine":"cucumber-js -p default --parallel 3 --retry 2"
+
   },
   "keywords": [],
   "author": "",
@@ -16,6 +21,8 @@
     "@types/node": "^26.0.0"
   },
   "dependencies": {
+    "chai": "^6.2.2",
+    "csv-parser": "^3.2.1",
     "cucumber-html-reporter": "^7.2.0"
   }
 }

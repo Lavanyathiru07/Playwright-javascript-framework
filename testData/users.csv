@@ -1,0 +1,3 @@
+type,email,password
+validUser,test@mail.com,Test123
+invalidUser,wrong@mail.com,wrong123

@@ -306,4 +306,88 @@ to add html report command is
 4.update the cucumber.js path with this """son:reports/cucumber-report.json""
 
 
+//////////////////////////////////////////////
+request----->fixturePlaywright Test only---------->auto injected
+request.newContext()------------->Anywhere (Cucumber, custom framework)--------->manually created
+why we are using request.newContext() because we are using cucumber framework/custom framework if you are using playwright 
+framework then go for request fixturePlaywright
+
+///////////////////////////////////////////////////
+Single---- exportexport 
+defaultMultiple--------- exportsexport { } 
+
+1)if you want to export more one class means it is called named exports and you should use curely braces
+2)if you want to export only one class then use default word with export and dont use curely braces it is called defult export
+
+/////////////////////////////////////////////////////////
+
+for process.env.ENV setup first you need to create one file that is called as config.js file 
+go and see that project structure 
+
+**
+ * Read ENV variable from system
+ */
+export const env = process.env.ENV || "dev";
+
+/**
+ * Get current environment config
+ */
+export const currentConfig = config[env];
+
+/**
+ * Safety check (important)
+ */
+if (!currentConfig) {
+  throw new Error(`Invalid ENV: ${env}`);
+
+  ====env will read ffrom your system for exmple if en is dev then goto config[dev]==> like
+   this it will work goto config variable compare the path
+
+   =========================================================================
+
+   Parallel and Retry Explanation
+
+
+Parallel
+Parallel execution means running multiple scenarios at the same time.
+For example, if you specify --parallel 2, it will execute 2 scenarios simultaneously.
+
+
+Retry
+Retry defines how many times a failed scenario should be re-executed.
+For example, if you use --retry 2, the scenario will automatically retry up to 2 times after a failure.
+
+If the scenario passes on the first retry, the remaining retry attempt will not be executed.
+
+
+
+We configure these options in both the cucumber.cjs file and the package.json file.
+
+
+We should not create separate scripts unnecessarily, but we can combine options like this:
+JSON"test:combine": "cucumber-js -p default --parallel 3 --retry 2"Show more lines
+
+The execution command:
+tag="@login" npm run test:combine
+
+=============================================================================================================
+For creating the API method like GET,post,put,delete
+
+1.create the api context ,in the api context you should pause the base url 
+2.then with help of context call the method get,post ,pust with endpoints and some params based on the methods
+  const apiContext = await request.newContext({
+        baseURL: this.baseURL
+      });
+
+        const response=await apiContext.post(endpoint,{form:data});
+3.return the response
+4.in catch block throw the error 
+
+==================================================================================
+
+
+
+
+
+
 
