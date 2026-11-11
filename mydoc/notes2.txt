@@ -1,0 +1,1012 @@
+Day 1: JavaScript Foundations for Automation
+Today's checklist
+ const
+ let
+ Data types
+ Operators
+ === and !==
+ && and ||
+ if / else
+ Small automation-oriented exercises
+ Final Day-1 challenge
+
+
+ 1.const:
+     => Use const when you don't plan to assign a different value to that variable.
+
+                  const user = {
+                  name: "Lavanya",
+                  role: "Tester"
+                 };
+ 
+                user.role = "Automation Tester";
+       => Because we're changing a property inside the object, not assigning a completely new object to user. MDN explicitly distinguishes an immutable const binding from mutable object contents. 
+
+           user = {
+           name: "Lavanya"
+           };
+
+      =>this is not correct here we are changing the const object /reinitialize the object
+ 2. let
+     => Use let when the variable needs to change.    
+
+ 3.Data types
+     => String  :""
+     =>Number  :89
+     =>Boolean : true/false
+     =>Undefined: let name;
+     =>Null  : const user:Null
+     =>Object: const product = {
+                 name: "Blue Top",
+                 price: 500
+                 };
+    =>Array :  const products = [
+                        "Blue Top",
+                         "Dress",
+                         " Tshirt"
+                      ];
+  
+                     or
+              const products = ["Blue Top","Dress","Tshirt"];
+   =>Use typeof  :const productName = "Blue Top";
+                  console.log(typeof productName);
+
+   4.comparsion Operators
+     > Greater than
+     < Less than
+     >= Greater than or equal
+     <= Less than or equal
+    === Strict equality
+    !== Strict inequality        
+               return boolean values
+
+  5.logical Operators
+       1.AND :&&
+       2.OR : ||
+ 6.contional operator:
+     const statusCode = 200;
+       if (statusCode === 200) {
+        console.log("API passed");
+        }
+
+7.else/if
+   const statusCode = 404;
+ 
+   if (statusCode === 200) {
+    console.log("API passed");
+      } else {
+        console.log("API failed");
+        }
+    
+8.else if
+
+
+-------------------------------
+1.object
+    -Single object ? for example How many employee ? == one employee
+    -use {}
+    - key : value pair (String value also on double quote and key in double quote)
+    -can create nested object also
+    -inside object should create any object ,becuase hard to call the object 
+      
+2.Array
+    -Many ()
+
+
+    -------------------------------------------
+    find():
+       -Find one matching employee/matching first employee
+       -So find() can use:
+               ===,!==,>,<,>=,<=,&&,||
+       -Example 
+          employees.find(
+           => emp.name === "Ram"
+             );
+
+             Answer:Return employee whose name is Ram
+
+         employees.find(
+         emp => emp.experience > 3
+          );
+
+
+    filter():
+     
+       -Find ALL matching employees/not matching first Employee
+       --So filter() can use:
+               ===,!==,>,<,>=,<=,&&,||
+       -employees.filter(
+         emp => emp.experience > 3
+          );
+
+            employees.filter(
+    emp => emp.experience > 3 &&
+            emp.id > 101
+        );   
+
+
+    map():
+      -Transform data
+      -employees.map(
+    emp => emp.name
+     );
+     
+     -employees.map(
+    emp => emp.name + " - " + emp.id
+         );
+
+    forEach():
+       -const result = employees.forEach(
+    emp => console.log(emp.name)
+     );
+
+    length:
+        -Used to find how many items are in an array.
+        -const employees = [
+
+    {
+        id: 101,
+        name: "Lavanya"
+    },
+
+    {
+        id: 102,
+        name: "Ram"
+    }
+
+    ];
+
+    -employees.length
+    -2
+
+    ✅ find() → One object
+    ✅ filter() → Array
+    ✅ map() → Array
+     ✅ forEach() → Action
+
+
+     ------------------------------------------
+     --What is the difference between console.log() and return?
+
+               1)console.log() is used to display a value on the console.
+               2)return is used to send a value back from a function so it can be stored, reused, or passed to another function.
+
+     Need to see a value?
+        ↓
+    console.log()
+
+     Need to use the value later?
+        ↓
+      return
+
+--When Should I Use console.log()?
+
+---Use for:
+
+    Plain Text
+    Debugging
+    Checking values
+    Troubleshooting
+    Learning
+
+Example:
+
+ JavaScript
+console.log(employee.name);
+
+--When Should I Use return?
+
+   Use when another function, variable, or method needs the value.
+
+   Example:
+
+  JavaScript
+  function add(a, b) {
+ 
+  return a + b;
+ 
+  }
+ 
+ const result = add(10, 20);
+
+ ***if in case you're calling the function or variable which is cantians some value 
+ you want to use in other method or function then use "return" .Because it will return 
+ value and store the value into the variable***
+
+ for example:
+    function age(a,b)
+    {
+        return a+b
+    }
+
+    const personAge=age(19,10)
+    console.log("person age is " +personAge);
+
+    ---Here instead of return I used console then it just print the value in console
+    not return the value in personAGE or store the answer in age function 
+    if I use console instead of return then I got undefined answer because console 
+    nothing return -----
+
+    so if return or use or store the value some where must use "return"
+
+    -----------------
+    Parameter
+    --------
+     -A parameter is a variable defined in the function definition that receives a value when the function is called.
+    Argument
+    --------- 
+    -An argument is the actual value passed to a function during the function call.
+
+     For example:
+     -------------
+     function add(a,b)
+     {
+        return a-b,
+     }
+     add(10,5)--------pausing value during the function call is called argument like 10,5
+     add(a,b)-----a,b is parameter,which is receiving the value 
+
+    -----------------
+    Arrow function
+    -----------
+    const getName =
+    () => "Lavanya";
+
+
+    ----------------------
+    ---Global Scope
+         ↓
+      Everywhere
+
+      const company = "CTS";
+
+     function displayCompany() {
+
+    console.log(company);
+
+        }
+
+      --- Function Scope
+           ↓
+          Inside Function Only
+
+          function displayEmployee() {
+
+         const name = "Lavanya";
+
+         console.log(name);
+
+          }
+
+            displayEmployee();
+
+        ---Block Scope
+          ↓
+        Inside {} Only
+        if (true) {
+
+    const employeeName = "Lavanya";
+    }
+
+---
+Async
+------------
+What is Async?
+
+async tells JavaScript:
+This function contains asynchronous work.
+async function getEmployees() {
+
+}
+
+-- 
+Why is async needed?
+    BEcause we want to use await ,await is not working with async
+    What is Await?
+
+await means:
+----------------
+
+Plain Text
+Pause here
+ 
+Wait for the result
+ 
+Then continue
+
+This function performs asynchronous work.--async tell
+
+↓
+
+Wait for API response.--await tell
+
+↓
+
+Return response.
+
+
+
+
+What is async?
+The async keyword is used to declare a function that performs asynchronous operations and allows the use of await inside it.
+
+What is await?
+The await keyword pauses function execution until an asynchronous operation completes and returns its result.
+
+Why do we use await in Playwright?
+Because browser actions and API calls take time to complete. Await ensures the operation finishes before moving to the next line of code.
+
+
+Browser;
+--------------------
+  ---You launch Chrome
+  ---const browser =await chromium.launch();
+  ----A browser is the actual browser application launched by Playwright, such as Chrome, Edge, or Firefox.
+
+
+
+  ------------
+  Context:
+  ---
+     ---Personal Gmail
+     --Office Gmail
+     ----Testing Gmail
+
+     -----chromium profile 1 ,2,3 have each cookie ,cahe,session,login data
+     ----login different profile(login) but same browser
+      ----const context =await browser.newContext();
+      ----Create a brand new  and clean browser profile
+      ----Need both logged in simultaneously like admin and customer 
+      ---think like this 
+             Browser
+               ↓
+            Apartment Building
+
+             Context
+               ↓
+           Individual Flat
+     ----A browser context is an isolated browser profile with its own cookies, session, and storage.
+
+-------------------------------------
+   Page:
+   ----
+   1.Tab---->page
+   2const page =await context.newPage();
+   Browser
+     ↓
+  Context
+     ↓
+  Page
+
+  example:
+    Chrome
+     ↓
+   Work Profile
+     ↓
+   Amazon Tab
+ ----A page represents a browser tab where all user interactions happen.
+
+ -----------------
+ Browser
+   ↓
+Actual Chrome
+
+Context
+   ↓
+Browser Profile
+
+Page
+   ↓
+Browser Tab
+-------------------
+Can we skip Context if we use only one profile?
+
+Answer:
+
+Plain Text
+No. Every Playwright page belongs to a browser context.
+ 
+If we create only one page, Playwright can automatically create a default context for us, but a context still exists behind the scenes.
+
+---------------
+---you can create all 3 browser,context,page manually directly and also indirectly playwright anutomation created broswer,page and context
+interally mostly we will interact with page itself
+
+test automation
+------------
+test(
+async ({ page }) => {
+
+});
+
+
+-------------------
+1.locator
+--------
+A locator is used to find and interact with an element on a webpage.
+
+2.priority order
+-------------
+1.getByRole() ✅ Best
+2. getByLabel()
+3. getByPlaceholder()
+4. getByText()
+5. locator() (CSS/XPath)
+
+Why is getByRole preferred?
+Plain Text
+It is more stable, readable, and closely matches how users interact with the application.
+                                             
+---------------------------
+
+API Testing:
+-------------
+1.what is request
+Information sent from client to server.
+Client
+ ↓
+Request
+ ↓
+Server
+
+----
+Client:
+---
+1)Playwright
+2)Browser
+3)Mobile App
+4)Postman
+
+Server:
+---
+Backend Application
+Database Layer
+
+----
+Playwright
+     ↓ Request
+Server/API
+     ↓ Response
+Playwright
+
+2. Request URL
+   -Every API needs an address.
+   -URl is address
+
+   --
+ 3.Headers  
+  -Headers provide additional information about a request, 
+  such as authentication details, content type, and other metadata.
+  What Problem Do Headers Solve?
+
+  ---Suppose a courier arrives at a building.
+  1)Who are you?
+  2)What are you delivering?
+  3)Are you authorized?
+
+  Common Header:
+  -----------
+  1)Authorization
+     Authorization:Bearer TOKEN123 ----I'm authenticated
+  2)Content-Type
+     Content-Type:application/json ----I sending json request
+
+4. Payload / Request Body
+--A payload (request body) contains the actual data sent to the server as part of the API request.
+  What Problem Does Payload Solve?
+     How will the server know
+     Employee Name?
+    Employee ID?
+    Department?
+    --Need to send data. send the data .that called payload /Request body
+
+    Client
+     ↓
+     {
+     id:101,
+     name:"Lavanya"
+        }
+        ↓
+      Server
+
+      -----
+      GET---No payload
+      POST--Payload
+      PUT--Payload
+      PATCH---Payload
+    ------
+   5. Query Parameters
+     -Query parameters are optional values added to the URL to filter, search, sort, or customize API results.
+     -/employees?status=active---->need only 5 active Employee
+     --/employees?status=active---->
+            1)employees->Endpoint
+            2)status=active->Query Parameter =====>Single query parameter
+            3)/employees?department=QA&status=active =====> multiple query paramter
+            4)?==>Query Parameter Starts
+
+  -----
+  6.Path Parameters
+     --1000 Employees
+     ---need Employee ID 101
+     --/employees/101 ===== emaployee--resource and 101 is path parameter
+
+     const employeeId = 101;
+     await request.get(
+   `/employees/${employeeId}`
+    );
+
+    -------
+    7.Query Parameter vs Path Parameter
+     Path Parameter:
+     --------------
+     ---Specific Employee/Identifies Specific Resource
+     ---/employees/101
+
+     --
+     Query Parameter
+     -------
+     ---Filters/Searches Resource
+     ---/employees?status=active
+
+     await request.post(
+   "/employees",
+   {
+
+      headers: {
+
+         Authorization:
+         "Bearer TOKEN123"
+
+      },
+
+      data: {
+
+         id:101,
+
+         name:"Lavanya",
+
+         department:"QA"
+
+      }
+
+   }
+);
+
+***/resource/{pathParameter}?queryParameter=value**=> can use path parameter and query parameter
+***/employees/101?includeAddress=true**
+employees====>Resource
+101====>Path Parameter
+includeAddress=true--->Query Parameter
+
+example
+const employeeId = 101;
+
+const response = await request.get(
+    `/employees/${employeeId}?status=active&department=QA`
+);
+
+--or---
+const employeeId = 101;
+
+const response = await request.get(
+    `/employees/${employeeId}`,
+    {
+        params: {
+            status: "active",
+            department: "QA"
+        }
+    }
+);
+
+Params-----> query parameter you can use like this also mostly for multiple query parameter
+The params option is used to pass query parameters in an API request. Playwright automatically appends them to the
+ URL and constructs the query string.
+       
+const queryParams = {
+    status: "active",
+    department: "QA"
+};
+
+await request.get(
+    "/employees",
+    {
+        params: queryParams
+    }
+);
+call back the variable inside the request method
+
+---
+1.Authentication
+---Authentication is the process of verifying the identity of a user or system. example:Username + Password,OTP,Token
+  ---Verifying who you are
+  ***Imagine you're entering your company office.
+  --Who are you? ,Are you a valid user? --yes,she is trident employee --authenticated successfully
+  Examples:
+
+Username + Password
+OTP
+Fingerprint
+JWT Token
+
+Example:
+----------
+Request:
+POST /login
+
+Body:
+{
+"username": "lavanya",
+"password": "123456"
+}
+
+FLOW:
+ Login->Verify User->Generate Token->Send Token
+
+---
+2.Authorization
+---Authorization is the process of determining what actions or resources an authenticated user is allowed to access.
+  --Verifying what you are allowed to do.
+  You try to enter:Server Room--Is Lavanya allowed to enter this room?--yes/no--> authorizated successfully
+  --Can you access this page?
+    Can you create employees?
+   Can you delete employees?
+
+   ---GET /employees
+   Header:
+  Authorization: Bearer abc123xyz
+  Server checks:
+    Is this token valid?
+    What permissions does this user have?
+
+    -Why Do We Send Authorization Header?-- like bareear token
+       ANS:I already logged in.I am an authenticated user.
+  FLOW:
+  Receive Token->Check Permissions->Allow / Deny Access
+
+
+  *****Login Success--->Authentication
+      Access Admin Page--->Authorization
+
+      ******Authentication Tests******
+       1)Valid Username + Password
+       2)Invalid Username + Password
+       3)Expired Token
+      4)_Missing Token
+
+******Authorization Tests********
+   1)Admin Can Delete Employee
+   2)Normal User Cannot Delete Employee
+   3)User Can View Own Profile
+   4)User Cannot View Other Profiles
+
+------------
+**Authentication= Who are you?
+**Authorization= What can you do?
+
+
+
+-----------------
+1)What is a Response?
+Response is the information sent back by the server.
+ example
+   Request:GET /employees/101
+   Response:{
+           "id": 101,
+           "name": "Lavanya",
+           "department": "QA"
+           }
+    Server is saying:Here is the employee you requested.
+
+    What Does a Response Contain?
+   Every response usually contains:
+     1. Status Code
+     2. Response Body
+       3. Headers
+     4. Response Time
+
+2)Status Code:
+ --Status code tells the result.==> pass/failure/bad request/not found
+  200-success -get
+  201-created successfully--Post
+  204-No content-delete--
+  400-bad request
+  401-Unauthorized---->Missing Token /Invalid Token--> you are not authenticated
+  403-Forbidden---->you are authenticated,But not allowed.
+  404--not found
+  500---internal server error--Server crashed/Something went wrong internally
+
+  3)Response Body
+   ---Information sent to server
+    --validate the response 
+    --How To Read Body?
+       const body =await response.json();
+       console.log(body);
+   ---Why response.json()?
+      Before parsing:Response
+      After parsing:JavaScript Object
+  ----example:expect(body.name).toBe("Lavanya");
+     -Verify API returned
+            --Lavanya
+  
+  4.Response Headers
+    -Information sent by server
+    example :Content-Type -- server response :application/json ,meaning :body contians json
+    example for to get the header:const headers =response.headers();
+    ---Why Verify Headers?
+        somtime API should return JSON but return HTML
+        Example :expect(headers["content-type"]).toContain("application/json");
+    
+ 5.Response Time:
+         --How fast is API?
+         --example :Request Sent -12:00:00 and Response Received:12:00:01 and Response Time:1 second
+         --Why Important?
+            Imagine login API takes--.customer unhappy ---> Bug
+          ---Response < 2 seconds--typical requirement
+
+  What Should A Tester Validate?
+  Validate:
+
+✅ Status Code
+
+✅ Response Body
+
+✅ Headers
+
+✅ Response Time
+
+Response Body validation:
+--------------------------
+
+Request==
+const response =
+await request.get(
+   "/employees/101"
+);
+
+Response body
+{
+   "id":101,
+   "name":"Lavanya"
+}
+
+status code 
+-----------
+expect(
+   response.status()
+).toBe(200);
+
+Body
+--------
+const body =
+await response.json();
+
+expect(
+   body.id
+).toBe(101);
+
+name
+----
+expect(
+   body.name
+).toBe("Lavanya");
+
+Header
+-------
+expect(
+   response.headers()
+   ["content-type"]
+).toContain(
+   "application/json"
+);
+
+What is API Response?
+--An API response is the data returned by the server after processing a request.
+
+What does a response contain?
+Status Code
+Response Body
+Headers
+Response Time
+
+Why is Status Code important?
+--It indicates whether the request was successfully processed or failed.
+
+Why do we use response.json()?
+--To convert the response body into a JavaScript object so that data can be accessed and validated.
+
+response time getting
+---------------------
+way 1
+const startTime = Date.now();
+
+const response = await request.get(
+    "/employees/101"
+);
+
+const endTime = Date.now();
+
+const responseTime = endTime - startTime;
+
+console.log(responseTime);
+
+expect(responseTime).toBeLessThan(2000);
+expect(response.status()).toBe(200);
+expect(responseBody.id).toBe(101);
+
+status code validation
+-------
+1.expect(response.status()).toBe(200);
+
+Response Body
+---------
+expect(body.name).toBe("Lavanya");
+
+Number Validation
+------------
+expect(body.id).toBe(101);
+
+Boolean Validation
+-----------------
+expect(body.active).toBe(true);
+
+String Contains
+----------
+expect(body.message).toContain( "successfully");
+
+Array Length
+----------
+expect(body.length).toBe(2);
+
+Array Not Empty
+----------
+expect(body.length).toBeGreaterThan(0);
+
+
+const startTime = Date.now();
+ 
+const response =
+await request.get(
+"/employees/101"
+);
+ 
+const body =
+await response.json();
+ 
+const responseTime =
+Date.now() - startTime;
+ 
+expect(
+response.status()
+).toBe(200);
+ 
+expect(
+body.id
+).toBe(101);
+ 
+expect(
+body.name
+).toBe("Lavanya");
+ 
+expect(
+response.headers()
+["content-type"]
+).toContain(
+"application/json"
+);
+ 
+expect(
+responseTime
+).toBeLessThan(2000);
+
+
+GET->Read Data
+POST->Create Data
+PUT->Update Complete Data
+PATCH->Update Partial Data
+DELETE->Delete Data
+
+
+Request 
+user send:{
+    "name": "Lavanya",
+    "role": "Tester"
+}
+
+
+server create employee
+
+response
+{
+    "id": 101,
+    "name": "Lavanya",
+    "role": "Tester"
+}
+
+Basic structure:
+-----------------
+const response =
+await request.post(
+    "/employees",
+    {
+        data: {
+            name: "Lavanya",
+            role: "Tester"
+        }
+    }
+);
+
+Post:
+  --POST API is used to create a new resource on the server.
+
+-----------------
+UI Layer
+------------------
+
+LoginPage
+SignupPage
+ProductPage
+
+Need:
+✅ page
+✅ context (optional)
+
+------------------
+
+API Layer
+
+UserApi
+ProductApi
+AccountApi
+
+Need:
+✅ apiUtils
+
+❌ page
+❌ context
+
+
+For UI interaction we need page and context because flow will happen like this 
+
+Browser(chrome)
+ ↓
+Context(broswer profile/session)
+ ↓
+Page(browser tab)
+
+Hook
+ ↓
+this.page
+ ↓
+LoginPage
+ ↓
+Actions
+ ↓
+click()
+fill()
+locator()
+
+--depends on your frame work context need const newPage =
+await context.newPage();--multiple tab (indefity the which session)
+
+--------------
+api needs apiUtils
+--because we need to intract with api
+
+Because API classes perform:GET
+ 
+POST
+ 
+PUT
+ 
+DELETE
+
+through:apiUtils
+
+  
+
+
+
+
+
+
+                          

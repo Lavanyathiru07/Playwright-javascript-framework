@@ -385,9 +385,35 @@ For creating the API method like GET,post,put,delete
 
 ==================================================================================
 
+------------
+doubts:
+'--------why using Hooks class here for page initalize ,why not in step deffinfitio  because for WDIo,selenium 
+using step definition to intialize the pages
+  2.playwright --have fixture concept ---so it initalize all page object class here like globally
+  you can use any where that Class
+  3.you cant import the page object in step definition
+
+  ---------
+  why using cucumber js for feature and step definition mention why no config file
+  because playwright does not have cucumber so we using cucumber js and while runningwe are calling
+  cucmber file default(oresent in package json)
+
+  ------------
+  real time project using node modules with action class
+  because frequestly someone can change the action class there is chance there 
+  so You have access for nexus js(copy of node js repo) there only change and push reprective
+  repo (sceanrio I have changed /added the method in action class and try to push in allegiant
+  repo but I cant I got error you can push the node changes only in nexus repo)
+
+node module contains G4 repo inside which is developed by allegiant team 
+that is contain action and assert class
 
 
+----
+you can initalize page inside the constructor or outside that like variable you should call or intilize the action class
+ it is acting like java.in java also you was mention/intilize inside the constructor
+ java and playwright developed same prson what why look like same
 
-
+ -----------
 
 

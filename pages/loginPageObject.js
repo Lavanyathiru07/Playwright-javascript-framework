@@ -28,4 +28,6 @@ async LoginPageValidation()
     await this.assert.verifyText(loggedinUserName,textVerified,"test presence")
 }
 
+
+
 }export default LoginPage;

@@ -1,0 +1,479 @@
+Day 2 Notes: Array, Object, JSON
+1. Object {}
+Definition
+
+An object is used to store information about one thing using key-value pairs.
+
+Syntax
+JavaScript
+const employee = {
+id: 101,
+name: "Lavanya",
+role: "Test Engineer"
+};
+Visualization
+Plain Text
+employee
+│
+├── id = 101
+├── name = Lavanya
+└── role = Test Engineer
+When should I use Object?
+
+Use an object when storing information about:
+
+Plain Text
+One Employee
+One Product
+One User
+One Manager
+One Order
+Accessing Values
+JavaScript
+employee.id
+
+Output:
+
+Plain Text
+101
+JavaScript
+employee.name
+
+Output:
+
+Plain Text
+Lavanya
+Formula
+Plain Text
+object.property
+
+Example:
+
+JavaScript
+employee.name
+2. Array []
+Definition
+
+An array is used to store multiple values.
+
+Syntax
+JavaScript
+const skills = [
+"JavaScript",
+"Playwright",
+"API Testing"
+];
+Visualization
+Plain Text
+skills
+ 
+[0] JavaScript
+[1] Playwright
+[2] API Testing
+When should I use Array?
+
+Use an array when storing:
+
+Plain Text
+Many Employees
+Many Products
+Many Skills
+Many Orders
+Many Users
+Accessing Values
+JavaScript
+skills[0]
+
+Output:
+
+Plain Text
+JavaScript
+JavaScript
+skills[1]
+
+Output:
+
+Plain Text
+Playwright
+Formula
+Plain Text
+array[index]
+
+Example:
+
+JavaScript
+skills[0]
+3. Array of Objects
+Definition
+
+Use an array of objects when storing multiple things, and each thing has multiple properties.
+
+Syntax
+JavaScript
+const employees = [
+ 
+{
+id: 101,
+name: "Lavanya"
+},
+ 
+{
+id: 102,
+name: "Ram"
+}
+ 
+];
+Visualization
+Plain Text
+employees
+│
+├── Employee 1
+│ id = 101
+│ name = Lavanya
+│
+└── Employee 2
+id = 102
+name = Ram
+Why Array?
+
+Because there are:
+
+Plain Text
+Many Employees
+Why Object?
+
+Because each employee has:
+
+Plain Text
+id
+name
+role
+department
+Accessing Values
+
+First employee:
+
+JavaScript
+employees[0]
+
+First employee name:
+
+JavaScript
+employees[0].name
+
+Output:
+
+Plain Text
+Lavanya
+
+Second employee:
+
+JavaScript
+employees[1].name
+
+Output:
+
+Plain Text
+Ram
+Formula
+Plain Text
+array[index].property
+
+Example:
+
+JavaScript
+employees[0].name
+4. Object Inside Object
+Definition
+
+Use an object inside another object when one thing has another single thing inside it.
+
+Example
+JavaScript
+const employee = {
+ 
+id: 101,
+ 
+name: "Lavanya",
+ 
+manager: {
+ 
+id: 201,
+ 
+name: "Sivakumar"
+}
+};
+Visualization
+Plain Text
+employee
+ 
+│
+├── id
+├── name
+│
+└── manager
+│
+├── id
+└── name
+Accessing Values
+JavaScript
+employee.manager.name
+
+Output:
+
+Plain Text
+Sivakumar
+Formula
+Plain Text
+object.object.property
+5. Array Inside Object
+Definition
+
+Use an array inside an object when one thing contains multiple items.
+
+Example
+JavaScript
+const employee = {
+ 
+id: 101,
+ 
+name: "Lavanya",
+ 
+skills: [
+ 
+"JavaScript",
+ 
+"Playwright",
+ 
+"API Testing"
+]
+};
+Visualization
+Plain Text
+employee
+ 
+│
+├── id
+├── name
+│
+└── skills
+ 
+[0] JavaScript
+[1] Playwright
+[2] API Testing
+Accessing Values
+JavaScript
+employee.skills[0]
+
+Output:
+
+Plain Text
+JavaScript
+Formula
+Plain Text
+object.array[index]
+6. JSON
+Full Form
+Plain Text
+JavaScript Object Notation
+Definition
+
+JSON is a data format commonly used by APIs to send and receive data.
+
+Example JSON Response
+JSON
+{
+"employees": [
+{
+"id": 101,
+"name": "Lavanya"
+},
+{
+"id": 102,
+"name": "Ram"
+}
+]
+}
+Playwright API
+JavaScript
+const body = await response.json();
+============> this JSOn becuase key itself mention with in Double quote 
+
+After conversion:
+
+JavaScript
+body
+
+becomes a JavaScript object that you can access using dot notation.
+
+7. How to Identify Array or Object
+Starts with {}
+JavaScript
+{
+id: 101,
+name: "Lavanya"
+}
+
+✅ Object
+
+Starts with []
+JavaScript
+[
+"JavaScript",
+"Playwright"
+]
+
+✅ Array
+
+Starts with [{ }]
+JavaScript
+[
+{
+id: 101,
+name: "Lavanya"
+}
+]
+
+✅ Array of Objects
+
+8. Real API Example
+JavaScript
+const body = {
+ 
+company: "CTS",
+ 
+employees: [
+ 
+{
+id: 101,
+name: "Lavanya"
+},
+ 
+{
+id: 102,
+name: "Ram"
+}
+]
+};
+Identify Types
+JavaScript
+body
+
+✅ Object
+
+JavaScript
+body.company
+
+✅ String
+
+JavaScript
+body.employees
+
+✅ Array
+
+JavaScript
+body.employees[0]
+
+✅ Object
+
+JavaScript
+body.employees[0].name
+
+✅ String
+
+Output:
+
+Plain Text
+Lavanya
+Most Important Day 2 Rule
+Plain Text
+ONE THING
+↓
+Object {}
+ 
+MANY THINGS
+↓
+Array []
+ 
+Many Things with Details
+↓
+Array of Objects
+ 
+[
+{},
+{},
+{}
+]
+Examples
+Plain Text
+One Employee
+↓
+{}
+ 
+Many Employees
+↓
+[]
+ 
+One Manager
+↓
+{}
+ 
+Many Skills
+↓
+[]
+ 
+One Company
+↓
+{}
+ 
+Company containing Many Employees
+↓
+{
+employees:[]
+}
+Shortcut for API Automation
+
+Whenever you see API data:
+
+JavaScript
+const body = await response.json();
+
+Ask these questions:
+
+Plain Text
+1. Is this Object?
+2. Which property contains the data?
+3. Is that property an Array?
+4. Which index do I need?
+5. Which property do I need?
+
+Example:
+
+JavaScript
+body.employees[0].name
+
+Read it as:
+
+Plain Text
+body
+↓
+employees
+↓
+first employee
+↓
+name
+↓
+Lavanya
+
+
+
+
+
+
+
+
+
+
+
+
+

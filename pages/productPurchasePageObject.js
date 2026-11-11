@@ -18,6 +18,7 @@ const expiryYearField="//input[@name='expiry_year']";
 const payAndConfrimBtn="#submit";
 const downloadInvoice="//a[text()='Download Invoice']";
 const orderInvoiceContinue="//a[text()='Continue']";
+const orderConfirmation="//p[contains(.,'Your order has been confirmed')]";
 const subscriptionlabel="//h2[text()='Subscription']";
 const subEmailAddress="#susbscribe_email";
 const subscriptionSymbol="#subscribe";
@@ -72,6 +73,15 @@ async enterCvvwithMonth(Cvv,Cmonth,Cyear)
 
 async clickPaymentAndConfirmBtn(){
     await this.actions.click(payAndConfrimBtn,"payment And Confirm button");
+}
+
+async verifyOrderPlacedSuccessfully(){
+    await this.actions.page.locator(orderConfirmation).waitFor({ state: 'visible' });
+    await this.assert.verifyTextContains(
+        orderConfirmation,
+        'Your order has been confirmed',
+        'order confirmation message'
+    );
 }
 
 async invoiceDowuload()

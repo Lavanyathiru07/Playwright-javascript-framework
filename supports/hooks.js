@@ -6,7 +6,9 @@ import SignupPage from '../pages/signupPageObject.js';
 import LoginPage from '../pages/loginPageObject.js';
 import ProductPage from '../pages/productPageObject.js';
 import ProductPurchasePage from '../pages/productPurchasePageObject.js';
-import ApiPageObject from '../pages/apiPageObject.js'
+import ProductsApiPage from '../pages/ProductsApiPage.js'
+import apiUIPageObject from '../pages/apiUIPageObject.js';
+
 
 // Set default timeout to 90 seconds
 setDefaultTimeout(90 * 1000);
@@ -33,7 +35,8 @@ Before(async function () {
      this.loginPage=new LoginPage(this.page, this.context);
      this.productPage=new ProductPage(this.page, this.context);
      this.productPurchasePage=new ProductPurchasePage(this.page, this.context);
-     this.apiPage = new ApiPageObject();
+     this.ProductsApiPage = new ProductsApiPage(this.page, this.context);
+    this.apiUIPageObject = new apiUIPageObject(this.page, this.context);
 
  this.switchAllPagesToNewPage = (newPage) => {
         this.page = newPage;
@@ -43,7 +46,8 @@ Before(async function () {
             this.loginPage,
             this.productPage,
             this.productPurchasePage,
-            this.apiPage
+            this.ProductsApiPage,
+            this.apiUIPageObject
         ];
              pageObjects.forEach(po => {
             if (po && po.actions) {
