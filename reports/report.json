@@ -1,0 +1,139 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "testing-the-login-functionality-and-add-to-product-functionality;create,-verify-and-delete-user",
+        "keyword": "Scenario",
+        "line": 129,
+        "name": "Create, verify and delete user",
+        "steps": [
+          {
+            "result": {
+              "status": "passed",
+              "duration": 932630300
+            },
+            "keyword": "Before",
+            "hidden": true
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 1361599
+            },
+            "keyword": "Before",
+            "hidden": true
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 2305980400
+            },
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 130,
+            "name": "user creates account through API",
+            "match": {
+              "location": "step-definitions\\apiUIPageSteps.js:45"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 581828800
+            },
+            "arguments": [],
+            "keyword": "When ",
+            "line": 131,
+            "name": "user verifies login through API",
+            "match": {
+              "location": "step-definitions\\apiUIPageSteps.js:169"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 619700
+            },
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 132,
+            "name": "login verification should be successful",
+            "match": {
+              "location": "step-definitions\\apiUIPageSteps.js:177"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 1029026799
+            },
+            "arguments": [],
+            "keyword": "When ",
+            "line": 133,
+            "name": "user deletes account through API",
+            "match": {
+              "location": "step-definitions\\apiUIPageSteps.js:80"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 866812799
+            },
+            "arguments": [],
+            "keyword": "When ",
+            "line": 134,
+            "name": "user verifies login using deleted credentials",
+            "match": {
+              "location": "step-definitions\\apiUIPageSteps.js:184"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 1399399
+            },
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 135,
+            "name": "login verification should fail",
+            "match": {
+              "location": "step-definitions\\apiUIPageSteps.js:192"
+            }
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 3098200
+            },
+            "keyword": "After",
+            "hidden": true
+          },
+          {
+            "result": {
+              "status": "passed",
+              "duration": 286935700
+            },
+            "keyword": "After",
+            "hidden": true
+          }
+        ],
+        "tags": [
+          {
+            "name": "@apichaining",
+            "line": 128
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "testing-the-login-functionality-and-add-to-product-functionality",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Testing the login functionality and add to product functionality",
+    "tags": [],
+    "uri": "features\\loginProductmodule.feature"
+  }
+]

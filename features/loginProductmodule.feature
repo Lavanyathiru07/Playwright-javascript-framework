@@ -73,13 +73,12 @@ Feature: Testing the login functionality and add to product functionality
       | url                             | emailadd                   | password |
       | https://automationexercise.com/ | test1782284883792@mail.com | test678  |
 
-@UIAPI
- Scenario Outline: Register user through API and shop through UI
+  @UIAPI
+  Scenario Outline: Register user through API and shop through UI
 
-Given user creates account through API
-
-When user logs into application
-When  I am on Home page I click on Products page
+    Given user creates account through API
+    When user logs into application
+    When  I am on Home page I click on Products page
     When I verify user is navigated to products page
     Then I am on Product page I verify all products should be displayed
     When I am on product page I  search the product "<product>"
@@ -90,55 +89,49 @@ When  I am on Home page I click on Products page
     When user deletes account through API
     Then user should not be able to login
 
-Examples:
+    Examples:
       | product |
       | blue    |
 
-Scenario: Validate product information between API and UI
+  @priceUi
+  Scenario: Validate product information between API and UI
 
-Given user creates account through API
-And user logs into the application
-When user retrieves product details through API
-And user searches same product in UI
-Then product name should match API response
-And product price should match API response
-When user adds the product to cart
-Then cart price should match API price
-When user proceeds to checkout
-And places order successfully
-Then order confirmation should be displayed
-When user deletes account through API
-Then account should be removed successfully
-
-
-Scenario: Create user through API and complete shopping journey
-
-Given user creates account through API
-When user navigates to login page
-And user logs in with API created credentials
-Then user name should be displayed on homepage
-When user searches for product "Blue Top"
-And user adds product "Blue Top" to cart
-And user searches for product "Men Tshirt"
-And user adds product "Men Tshirt" to cart
-Then both products should be displayed in cart
-And cart total should be calculated correctly
-When user proceeds to checkout
-And user confirms delivery details
-And user places order
-Then order confirmation message should be displayed
-When user deletes account through API
-Then account deletion should be successful
+    Given user creates account through API
+    When user logs into application
+    When user retrieves all products through API
+    And user selects a product from API response
+    And user searches same product in UI
+    Then product name should match API response
+    And product price should match API response
+    When I add product to cart
+    And I click on View Cart button
+    Then cart price should match API price
+    When I click on Proceed To Checkout
+    When places order successfully
+    When I enter name on card name "Lavanya" and card number "4111111111111111"
+    And I enter CVC "123",expiry month "12" and expiry year "2035"
+    When user deletes account through API
+    Then user should not be able to login
 
 
-Scenario: Create account through API and verify through UI
-Given user creates account through API
-When user navigates to login page
-And user logs in with API created credentials
-Then user name should be displayed on homepage
-When user updates account details through API
-And user refreshes the application
-Then updated account details should be reflected in UI
-When user deletes account through API
-And user tries to login again
-Then login should fail with invalid credentials message
+  @refresh
+  Scenario: Create account through API and verify through UI
+    Given user creates account through API
+    When user logs into application
+    Then user name should be displayed on homepage
+    When user updates account details through API
+    And user refreshes the application
+    Then updated account details should be reflected in UI
+    When user deletes account through API
+    Then user should not be able to login
+
+  @apichaining
+  Scenario: Create, verify and delete user
+    Given user creates account through API
+    When user verifies login through API
+    Then login verification should be successful
+    When user deletes account through API
+    When user verifies login using deleted credentials
+    Then login verification should fail
+
+    

@@ -24,6 +24,7 @@ const subEmailAddress="#susbscribe_email";
 const subscriptionSymbol="#subscribe";
 
 
+
 class productPurchasePage{
 
 constructor(page,context) {
@@ -41,6 +42,7 @@ async viewTheProduct()
 {
     await this.actions.click(viewCart,"View the cart");
 }
+
 async verifyTheAddedProductDetails()
 {
     await this.actions.getAllTexts(productDescriptionDetails,"product details");

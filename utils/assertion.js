@@ -177,4 +177,48 @@ export default class Assertions {
 
     Logger.success(`All ${elementName} validated successfully`);
   }
+
+  /**
+ * Verify actual value equals expected value
+ *
+ * @param {string} actualValue
+ * @param {string} expectedValue
+ * @param {string} fieldName
+ */
+async verifyEquals(actualValue, expectedValue, fieldName) {
+
+    Logger.step(
+        `Verify ${fieldName} equals "${expectedValue}"`
+    );
+
+    await expect(actualValue)
+        .toBe(expectedValue);
+
+    Logger.success(
+        `${fieldName} matched successfully`
+    );
+}
+
+/**
+ * Verify actual value contains expected value
+ *
+ * @param {string} actualValue
+ * @param {string} expectedValue
+ * @param {string} fieldName
+ */
+async verifyContains(actualValue,expectedValue,fieldName){
+
+    Logger.step(
+        `Verify ${fieldName} contains "${expectedValue}"`
+    );
+
+    await expect(actualValue)
+        .toContain(expectedValue);
+
+    Logger.success(
+        `${fieldName} contains expected value`
+    );
+
+}
+
 }

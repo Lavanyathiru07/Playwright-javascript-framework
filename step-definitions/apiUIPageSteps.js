@@ -71,15 +71,11 @@ Given('user creates account through API', async function () {
 });
 
 When('user logs into application', async function () {
-
   await this.signupPage.navigate('https://automationexercise.com/login');
   await this.signupPage.signloginbtn();
   await this.loginPage.LoginTheAcount(this.userEmail, this.userPassword);
   await assertions.verifyToBEVisible(`Logged in as ${this.userName}`);
-
 });
-
-
 
 When('user deletes account through API',async function () {
   this.deleteResponse = await apiUIPage.verifyAccountDeletion({
@@ -99,3 +95,104 @@ Then('user should not be able to login',async function () {
   await this.loginPage.LoginTheAcount(this.userEmail, this.userPassword);
  await assertions.verifyToBEVisible('Your email or password is incorrect!');
 })
+
+
+Then('user name should be displayed on homepage',async function () {
+  await assertions.verifyToBEVisible(`Logged in as ${this.userName}`);
+});
+
+When('user updates account details through API',async function () {
+  const updateName= "lavanyaupdated";
+  this.updateResponse = await apiUIPage.verifyAccountUpdate({
+    email: this.userEmail,
+    password: this.userPassword,
+    name: updateName
+  });
+  this.userName = updateName;
+
+  await apiUtils.verifyHttpStatus(this.updateResponse, 200);
+  this.updateResponseBody = await apiUtils.getResponseBody(this.updateResponse);
+  await apiUtils.verifyResponseValue(this.updateResponseBody, 'responseCode', 200);
+  await apiUtils.verifyResponseValue(this.updateResponseBody, 'message', 'User updated!');
+});
+
+When('user refreshes the application',async function () {
+  await this.page.reload();
+});
+
+Then('updated account details should be reflected in UI',async function () {
+  await assertions.verifyToBEVisible(`Logged in as ${this.userName}`);
+});
+
+
+
+When('user retrieves all products through API',async function () {
+  this.productApiResponse = await apiUIPage.verifyGetAllProducts();
+});
+
+When('user selects a product from API response',async function () {
+  const body = await apiUtils.getResponseBody(this.productApiResponse);
+  this.product = body.products[0];
+  this.productName = this.product.name;
+  this.productPrice = this.product.price;
+});
+
+When('user searches same product in UI',async function () {
+  await this.productPage.productPage();
+  await this.productPage.searchTheProduct(this.productName);
+});
+
+Then('product name should match API response', async function () {
+  const productNameUI = await this.productPage.getProductNameUI();
+  await assertions.verifyEquals(this.productName, productNameUI, 'Product name validation between API and UI');
+});
+
+Then('product price should match API response',async function () {
+  const productPriceUI = await this.productPage.getProductPriceUI();
+  await assertions.verifyEquals(this.productPrice, productPriceUI, 'Product price validation between API and UI');
+});
+
+
+Then('cart price should match API price',async function () {
+  const productCartPriceUI = (await this.productPage.verifyCartPriceUI()).trim();
+  await assertions.verifyEquals(this.productPrice, productCartPriceUI, 'Product price validation between API and UI');
+});
+
+When('user proceeds to checkout',async function () {
+    await this.productPurchasePage.proceedTocheckout();
+ 
+});
+
+When('places order successfully',async function () {
+  await this.productPurchasePage.verifyTheAddressDetails();
+});
+When('user verifies login through API',async function () {
+  this.loginresponse=await apiUIPage.verifyLogin({
+    email: this.userEmail,
+    password: this.userPassword
+  });
+  await apiUtils.verifyHttpStatus(this.loginresponse, 200);
+});
+
+Then('login verification should be successful',async function () {
+  this.loginResponseBody = await apiUtils.getResponseBody(this.loginresponse);
+  await apiUtils.verifyResponseValue(this.loginResponseBody, 'responseCode', 200);
+  await apiUtils.verifyResponseValue(this.loginResponseBody, 'message', 'User exists!');
+});
+
+
+When('user verifies login using deleted credentials',async function () {
+  this.loginresponse=await apiUIPage.verifyLogin({
+    email: this.userEmail,
+    password: this.userPassword
+  });
+  await apiUtils.verifyHttpStatus(this.loginresponse, 200);
+});
+
+Then('login verification should fail',async function () {
+  this.loginResponseBody = await apiUtils.getResponseBody(this.loginresponse);
+  await apiUtils.verifyResponseValue(this.loginResponseBody, 'responseCode', 404);
+  await apiUtils.verifyResponseValue(this.loginResponseBody, 'message', 'User not found!');
+});
+
+

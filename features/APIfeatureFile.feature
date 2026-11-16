@@ -38,6 +38,7 @@ Feature: API and Products Operations
     # ✅ DELETE
     When logout the user
     Then response status should be 204
+    
   @api @products
   Scenario: Verify user can get all products
     When user sends GET request to get all products

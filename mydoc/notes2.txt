@@ -1002,6 +1002,21 @@ DELETE
 
 through:apiUtils
 
+
+-------
+toHaveText()        // Exact text
+toContainText()     // Partial text
+toHaveValue()       // Input value
+toHaveAttribute()   // Attribute value
+toHaveCount()       // Count
+toHaveURL()         // URL
+toHaveTitle()       // Title
+toBeVisible()       // Visibility
+toBeHidden()        // Hidden
+toBeEnabled()       // Enabled
+toBeDisabled()      // Disabled
+toBeChecked()       // Checkbox/Radio
+
   
 
 

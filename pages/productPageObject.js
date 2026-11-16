@@ -11,8 +11,9 @@ const productSearchList="//div[@class='productinfo text-center']/p";
 const productViewDetails="//div[@class='productinfo text-center']/parent::div//following-sibling::div[@class='choose']";
 const ProductViewText="//div[@class='product-information']/h2";
 const productPrice="//div[@class='product-information']/span/span";
-
-
+const productFristprice="(//div[@class='productinfo text-center']/parent::div//following-sibling::div/h2)[1]"
+const productFristName="(//div[@class='productinfo text-center']/p)[1]"
+const productCartPrice="//td[@class='cart_price']"  //(//div[@class='productinfo text-center']/parent::div//following-sibling::div/p)[1]
 
 class productdetail{
 
@@ -74,6 +75,21 @@ async productetailsValidation()
 {
     await this.assert.verifyVisible(productPrice,"product Price")
     await this.assert.verifyVisible(ProductViewText,"Product view text")
+}
+
+async getProductNameUI()
+{
+    return await this.actions.getText(productFristName,"product name");
+}
+
+async getProductPriceUI()
+{
+    return await this.actions.getText(productFristprice,"product price");
+}
+
+async verifyCartPriceUI()
+{
+    return await this.actions.getText(productCartPrice,"cart price");
 }
 
 
